@@ -2,7 +2,7 @@
 ## Title: LootList
 ## Notes: List of players for Suicide Kings loot distribution
 ## Author: Ivan Leben
-## Version: 0.1
+## Version: 1.0
 ## SavedVariables: LootListSave
 
 Prime\PrimeUtil.lua
