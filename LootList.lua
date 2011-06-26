@@ -219,7 +219,7 @@ function LL.CreateGui()
 	--List background
 	local bg = CreateFrame( "Frame", nil, w.container );
 	bg:SetPoint( "TOPRIGHT", drop, "BOTTOMRIGHT", 0,-5 );
-	bg:SetPoint( "BOTTOMLEFT", 0,30 );
+	bg:SetPoint( "BOTTOMLEFT", 0,0 );
 	
 	bg:SetBackdrop(
 	  {bgFile = "Interface/Tooltips/UI-Tooltip-Background",
@@ -293,6 +293,17 @@ end
 --Syncing
 --===================================================
 
+function LL.GetActiveSyncList()
+
+	--Check if a valid sync list is active
+	if (LL.syncActiveList == nil) then
+		return nil;
+	end
+	
+	--Return currently active sync list	
+	return LL.syncLists[ LL.syncActiveList ];
+end
+
 function LL.AutoSync()
 
 	--Try syncing with loot master
@@ -306,7 +317,7 @@ function LL.AutoSync()
 	--Try syncing with group leader
 	local leader = PrimeGroup.GetLeader();
 	
-	if (leader ~= nil and leader ~= UnitName("player")) then
+	if (leader ~= nil ) then
 		LL.Sync( leader );
 		return;
 	end
@@ -345,8 +356,9 @@ function LL.OnEvent_CHAT_MSG_ADDON( prefix, msg, channel, sender )
 		--Check if sync id matches
 		if (arg1 == LL.syncTarget..LL.syncId) then
 		
-			--Create new list
+			--Create new list and make active
 			LL.syncLists[ arg2 ] = {};
+			LL.syncActiveList = arg2;
 			
 		end
 	
@@ -381,14 +393,14 @@ end
 function LL.ApplySync()
 
 	--Get save table
-	local save = LLM.GetSave();
+	local save = LL.GetSave();
 	
 	--Clear existing lists
 	PrimeUtil.ClearTableKeys( save.lists );
 	save.activeList = nil;
 	
 	--Iterate sync lists
-	for name,syncList in pairs(LLM.syncLists) do
+	for name,syncList in pairs(LL.syncLists) do
 		
 		--Insert/overwrite active list
 		save.lists[ name ] = CopyTable(syncList);
@@ -421,6 +433,7 @@ function LL.Init()
 	LL.syncTarget = "Target";
 	LL.syncId = 0;
 	LL.syncLists = {};
+	LL.syncActiveList = nil;
 	
 	--Start with default save if missing
 	if (LL.GetSave() == nil) then
