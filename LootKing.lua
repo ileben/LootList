@@ -1,21 +1,21 @@
 --[[
 
-LootList
+LootKing
 Author: Ivan Leben
 
 --]]
 
-LootList = {}
+LootKing = {}
 
-LootList.VERSION = "0.1";
+LootKing.VERSION = "0.1";
 
-LootList.PREFIX = "LootList";
-LootList.PRINT_PREFIX = "<LootList>";
-LootList.SYNC_PREFIX = "LootListSync";
+LootKing.PREFIX = "LootKing";
+LootKing.PRINT_PREFIX = "<LootKing>";
+LootKing.SYNC_PREFIX = "LootKingSync";
 
-LootList.DEFAULT_SAVE =
+LootKing.DEFAULT_SAVE =
 {
-	version = LootList.VERSION,
+	version = LootKing.VERSION,
 	
 	lists =
 	{
@@ -24,44 +24,44 @@ LootList.DEFAULT_SAVE =
 	activeList = nil,
 };
 
-local LL = LootList;
+local LK = LootKing;
 
 --Output
 --===================================================
 
-function LL.Print( msg )
-  print( "|cffffff00" .. LL.PRINT_PREFIX .. " |cffffffff"..msg );
+function LK.Print( msg )
+  print( "|cffffff00" .. LK.PRINT_PREFIX .. " |cffffffff"..msg );
 end
 
-function LL.Error (msg)
-  print( "|cffffff00" .. LL.PRINT_PREFIX .. " |cffff2222"..msg );
+function LK.Error (msg)
+  print( "|cffffff00" .. LK.PRINT_PREFIX .. " |cffff2222"..msg );
 end
 
 --Save management
 --===================================================
 
-function LL.ResetSave()
+function LK.ResetSave()
 
-	LootListSave = CopyTable( LL.DEFAULT_SAVE );
+	LootKingSave = CopyTable( LK.DEFAULT_SAVE );
 end
 
-function LL.GetSave()
+function LK.GetSave()
 
-	return LootListSave;
+	return LootKingSave;
 end
 
 --Slash handler
 --===================================================
 
 
-function LL.SlashHandler( msg )
+function LK.SlashHandler( msg )
 
 	if (msg == "") then
 
 		--Empty command
-		LL.UpdateGui();
-		LL.ShowGui();
-		LL.AutoSync();
+		LK.UpdateGui();
+		LK.ShowGui();
+		LK.AutoSync();
 		
 	else
 	
@@ -69,31 +69,31 @@ function LL.SlashHandler( msg )
 		local cmd, param = strsplit( " ", msg );
 		if (cmd == "reset") then
 		
-			LL.ResetSave();
-			LL.Print( "Settings reset." );
+			LK.ResetSave();
+			LK.Print( "Settings reset." );
 		end
 	end
 end
 
 
-SLASH_LootList1 = "/lootlist";
-SLASH_LootList2 = "/ll";
-SlashCmdList["LootList"] = LL.SlashHandler;
+SLASH_LootKing1 = "/lootking";
+SLASH_LootKing2 = "/lk";
+SlashCmdList["LootKing"] = LK.SlashHandler;
 
 
 --Player list
 --===================================================
 
-function LL.PlayerList_New( name )
+function LK.PlayerList_New( name )
 
 	local f = PrimeGui.List_New( name );
 	
-	f.UpdateItem = LL.PlayerList_UpdateItem;
+	f.UpdateItem = LK.PlayerList_UpdateItem;
 	
 	return f;
 end
 
-function LL.PlayerList_UpdateItem( frame, item, value, selected  )
+function LK.PlayerList_UpdateItem( frame, item, value, selected  )
 
 	PrimeGui.List_UpdateItem( frame, item, value, selected );
 	
@@ -108,20 +108,20 @@ end
 --Gui
 --============================================================================
 
-function LL.ShowGui()
+function LK.ShowGui()
 	
-	LL.gui:Show();
+	LK.gui:Show();
 end
 
-function LL.HideGui()
+function LK.HideGui()
 
-	LL.gui:Hide();
+	LK.gui:Hide();
 end
 
-function LL.GetActiveList()
+function LK.GetActiveList()
 
 	--Check if a valid list is active
-	local save = LL.GetSave();
+	local save = LK.GetSave();
 	if (save.activeList == nil) then
 		return nil;
 	end
@@ -130,20 +130,20 @@ function LL.GetActiveList()
 	return save.lists[ save.activeList ];
 end
 
-function LL.SetActiveList( name )
+function LK.SetActiveList( name )
 
 	--Check if valid name
-	local save = LL.GetSave();
+	local save = LK.GetSave();
 	if (save.lists[ name ] == nil) then
 		return;
 	end
 	
 	--Switch to given list
 	save.activeList = name;
-	LL.UpdateGui();
+	LK.UpdateGui();
 end
 
-function LL.FillList( guiList, playerList )
+function LK.FillList( guiList, playerList )
 
 	--Constants
 	local white = {r=1, g=1, b=1, a=1};
@@ -184,17 +184,17 @@ function LL.FillList( guiList, playerList )
 end
 
 
-function LL.CreateGui()
+function LK.CreateGui()
 
 	--Window
-	local w = PrimeGui.Window_New("LootList", "LootList", true, true);
+	local w = PrimeGui.Window_New("LootKing", "LootKing", true, true);
 	w:Init();
 	w:SetParent( UIParent );
 	w:SetWidth( 300 );
 	w:SetHeight( 400 );
 	
 	--Label
-    local txt = w:CreateFontString( LL.PREFIX.."Gui.Text", "OVERLAY", "GameFontNormal" );
+    local txt = w:CreateFontString( LK.PREFIX.."Gui.Text", "OVERLAY", "GameFontNormal" );
     txt:SetTextColor( 1, 1, 0, 1 );
     txt:SetPoint( "TOPLEFT", w.container, "TOPLEFT", 0, 0 );
     txt:SetPoint( "TOPRIGHT", w.container, "TOPRIGHT", 0, 0 );
@@ -206,13 +206,13 @@ function LL.CreateGui()
 	w.text = txt;
 	
 	--Dropdown
-	local drop = PrimeGui.Drop_New( LL.PREFIX.."Gui.Dropdown" );
+	local drop = PrimeGui.Drop_New( LK.PREFIX.."Gui.Dropdown" );
 	drop:Init();
 	drop:SetParent( w.container );
 	drop:SetPoint( "TOPLEFT", 0, -5 );
 	drop:SetPoint( "TOPRIGHT", 0, -5 );
 	drop:SetLabelText( "" );
-	drop.OnValueChanged = LL.Gui_Drop_OnValueChanged;
+	drop.OnValueChanged = LK.Gui_Drop_OnValueChanged;
 	drop.window = w;
 	w.drop = drop;
 	
@@ -230,7 +230,7 @@ function LL.CreateGui()
 	bg:SetBackdropColor(0,0,0,0.8);
 	
 	--List box
-	local list = LL.PlayerList_New( "LootList".."List" );
+	local list = LK.PlayerList_New( "LootKing".."List" );
 	list:Init();
 	list:SetParent( bg );
 	list:SetAllPoints( bg );
@@ -241,76 +241,76 @@ function LL.CreateGui()
 	
 end
 
-function LL.UpdateGui()
+function LK.UpdateGui()
 
 	--Get save table
-	local save = LL.GetSave();
+	local save = LK.GetSave();
 	
 	--Check if we got a valid list
 	if (save.activeList == nil) then
 	
 		--Notify user of missing list
-		LL.gui.text:SetText( "Join a group to receive loot list" );
+		LK.gui.text:SetText( "Join a group to receive loot list" );
 		
 		--Add dummy list item
-		LL.gui.drop:RemoveAllItems();
-		LL.gui.drop:AddItem( "<Loot list unavailable>" );
-		LL.gui.drop:SelectIndex(0);
+		LK.gui.drop:RemoveAllItems();
+		LK.gui.drop:AddItem( "<Loot list unavailable>" );
+		LK.gui.drop:SelectIndex(0);
 		
 	else
 	
 		--Set message to match sync target
-		LL.gui.text:SetText( "List received from "..LootList.syncTarget );
+		LK.gui.text:SetText( "List received from "..LootKing.syncTarget );
 		
 		--Fill dropdown with list names
-		LL.gui.drop:RemoveAllItems();
+		LK.gui.drop:RemoveAllItems();
 		
 		for name,list in pairs(save.lists) do
-			LL.gui.drop:AddItem( name, name );
+			LK.gui.drop:AddItem( name, name );
 		end
 		
 		--Select active list in the dropdown
-		LL.gui.drop:SelectValue( save.activeList );
+		LK.gui.drop:SelectValue( save.activeList );
 		
 		--Get active list
-		local list = LL.GetActiveList();
+		local list = LK.GetActiveList();
 		if (list ~= nil) then
 		
 			--Update list
-			LL.FillList( LL.gui.list, list );
+			LK.FillList( LK.gui.list, list );
 		end
 		
 	end
 end
 
-function LL.Gui_Drop_OnValueChanged( drop )
+function LK.Gui_Drop_OnValueChanged( drop )
 
 	--Switch to selected list
-	LL.SetActiveList( drop:GetSelectedText() );
+	LK.SetActiveList( drop:GetSelectedText() );
 end
 
 
 --Syncing
 --===================================================
 
-function LL.GetActiveSyncList()
+function LK.GetActiveSyncList()
 
 	--Check if a valid sync list is active
-	if (LL.syncActiveList == nil) then
+	if (LK.syncActiveList == nil) then
 		return nil;
 	end
 	
 	--Return currently active sync list	
-	return LL.syncLists[ LL.syncActiveList ];
+	return LK.syncLists[ LK.syncActiveList ];
 end
 
-function LL.AutoSync()
+function LK.AutoSync()
 
 	--Try syncing with loot master
 	local master = PrimeGroup.GetLootMaster();
 	
 	if (master ~= nil) then
-		LL.Sync( master );
+		LK.Sync( master );
 		return;
 	end
 	
@@ -318,57 +318,57 @@ function LL.AutoSync()
 	local leader = PrimeGroup.GetLeader();
 	
 	if (leader ~= nil ) then
-		LL.Sync( leader );
+		LK.Sync( leader );
 		return;
 	end
 end
 
-function LL.Sync( target )
+function LK.Sync( target )
 	
 	--Notify user
-	LL.Print( "Sending sync request to "..target.."...");
+	LK.Print( "Sending sync request to "..target.."...");
 	
 	--Init sync info
-	LL.syncOn = true;
-	LL.syncTarget = target;
-	LL.syncId = LL.syncId + 1;
+	LK.syncOn = true;
+	LK.syncTarget = target;
+	LK.syncId = LK.syncId + 1;
 	
 	--Init sync list
-	PrimeUtil.ClearTableKeys( LL.syncLists );
+	PrimeUtil.ClearTableKeys( LK.syncLists );
 	
 	--Send sync request with our sync id
-	SendAddonMessage( LL.SYNC_PREFIX, "SyncRequest_"..LL.syncTarget..LL.syncId,
+	SendAddonMessage( LK.SYNC_PREFIX, "SyncRequest_"..LK.syncTarget..LK.syncId,
 		"WHISPER", target );
 end
 
-function LL.OnEvent_CHAT_MSG_ADDON( prefix, msg, channel, sender )
+function LK.OnEvent_CHAT_MSG_ADDON( prefix, msg, channel, sender )
 
-	if (prefix ~= LL.SYNC_PREFIX) then
+	if (prefix ~= LK.SYNC_PREFIX) then
 		return;
 	end
 	
-	--LL.Print( "Addon prefix: "..tostring(prefix).." Message: "..tostring(msg) );
+	--LK.Print( "Addon prefix: "..tostring(prefix).." Message: "..tostring(msg) );
 	
 	local cmd, arg1, arg2 = strsplit( "_", msg );
 	
-	if (cmd == "SyncList" and LL.syncOn) then
+	if (cmd == "SyncList" and LK.syncOn) then
 	
 		--Check if sync id matches
-		if (arg1 == LL.syncTarget..LL.syncId) then
+		if (arg1 == LK.syncTarget..LK.syncId) then
 		
 			--Create new list and make active
-			LL.syncLists[ arg2 ] = {};
-			LL.syncActiveList = arg2;
+			LK.syncLists[ arg2 ] = {};
+			LK.syncActiveList = arg2;
 			
 		end
 	
-	elseif (cmd == "Sync" and LL.syncOn) then
+	elseif (cmd == "Sync" and LK.syncOn) then
 		
 		--Check if sync id matches
-		if (arg1 == LL.syncTarget..LL.syncId) then
+		if (arg1 == LK.syncTarget..LK.syncId) then
 		
 			--Check that active list exists
-			local syncList = LL.GetActiveSyncList();
+			local syncList = LK.GetActiveSyncList();
 			if (syncList ~= nil) then
 				
 				--Add list item
@@ -377,30 +377,30 @@ function LL.OnEvent_CHAT_MSG_ADDON( prefix, msg, channel, sender )
 		end
 	
 	
-	elseif (cmd == "SyncEnd" and LL.syncOn) then
+	elseif (cmd == "SyncEnd" and LK.syncOn) then
 	
 		--Check if sync id matches
-		if (arg1 == LL.syncTarget..LL.syncId) then
+		if (arg1 == LK.syncTarget..LK.syncId) then
 			
 			--Sync finished
-			LL.syncOn = false;
-			LL.ApplySync();
+			LK.syncOn = false;
+			LK.ApplySync();
 		end
 	end
 end
 
 
-function LL.ApplySync()
+function LK.ApplySync()
 
 	--Get save table
-	local save = LL.GetSave();
+	local save = LK.GetSave();
 	
 	--Clear existing lists
 	PrimeUtil.ClearTableKeys( save.lists );
 	save.activeList = nil;
 	
 	--Iterate sync lists
-	for name,syncList in pairs(LL.syncLists) do
+	for name,syncList in pairs(LK.syncLists) do
 		
 		--Insert/overwrite active list
 		save.lists[ name ] = CopyTable(syncList);
@@ -411,49 +411,49 @@ function LL.ApplySync()
 		end
 	end
 	
-	LL.UpdateGui();
+	LK.UpdateGui();
 end
 
 
 --Entry point
 --===================================================
 
-function LL.OnEvent( frame, event, ... )
+function LK.OnEvent( frame, event, ... )
   
   local funcName = "OnEvent_" .. event;
-  local func = LL[ funcName ];
+  local func = LK[ funcName ];
   if (func) then func(...) end
   
 end
 
-function LL.Init()
+function LK.Init()
 	
 	--Init variables
-	LL.syncOn = false;
-	LL.syncTarget = "Target";
-	LL.syncId = 0;
-	LL.syncLists = {};
-	LL.syncActiveList = nil;
+	LK.syncOn = false;
+	LK.syncTarget = "Target";
+	LK.syncId = 0;
+	LK.syncLists = {};
+	LK.syncActiveList = nil;
 	
 	--Start with default save if missing
-	if (LL.GetSave() == nil) then
-		LL.ResetSave();
+	if (LK.GetSave() == nil) then
+		LK.ResetSave();
 	end
 	
 	--Create new gui if missing
-	if (LL.gui == nil) then
-		LL.gui = LL.CreateGui();
-		LL.gui:SetPoint( "CENTER", 0,0 );
-		LL.gui:Hide();
+	if (LK.gui == nil) then
+		LK.gui = LK.CreateGui();
+		LK.gui:SetPoint( "CENTER", 0,0 );
+		LK.gui:Hide();
 	end
 	
 	--Register addon event
-	LL.gui:SetScript( "OnEvent", LL.OnEvent );
-	LL.gui:RegisterEvent( "CHAT_MSG_ADDON" );
+	LK.gui:SetScript( "OnEvent", LK.OnEvent );
+	LK.gui:RegisterEvent( "CHAT_MSG_ADDON" );
 	
 	--First update
-	LL.UpdateGui();
+	LK.UpdateGui();
 	
 end
 
-LL.Init();
+LK.Init();

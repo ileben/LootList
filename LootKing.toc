@@ -1,9 +1,9 @@
 ## Interface: 40100
-## Title: LootList
+## Title: LootKing
 ## Notes: List of players for Suicide Kings loot distribution
 ## Author: Ivan Leben
 ## Version: 1.0
-## SavedVariables: LootListSave
+## SavedVariables: LootKingSave
 
 Prime\PrimeUtil.lua
 Prime\PrimeGroup.lua
@@ -15,4 +15,4 @@ Prime\PrimeGui_Dropdown.lua
 Prime\PrimeGui_Window.lua
 Prime\PrimeGui_Dialog.lua
 
-LootList.lua
+LootKing.lua
