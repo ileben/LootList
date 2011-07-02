@@ -1,4 +1,4 @@
-## Interface: 40100
+## Interface: 40200
 ## Title: LootKing
 ## Notes: List of players for Suicide Kings loot distribution
 ## Author: Ivan Leben
