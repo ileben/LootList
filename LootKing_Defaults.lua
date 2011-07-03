@@ -31,6 +31,7 @@ LK.DEFAULT_SAVE =
 	},
 	
 	activeList = nil,
+	syncTarget = nil,
 	minimapButtonPos = 240,
 };
 
@@ -57,6 +58,10 @@ function LK.Upgrade_1_1()
 	
 	if (save.minimapButtonPos == nil) then
 		save.minimapButtonPos = LK.DEFAULT_SAVE.minimapButtonPos;
+	end
+	
+	if (save.syncTarget == nil) then
+		save.syncTarget = "someone";
 	end
 
 end

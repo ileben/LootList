@@ -30,7 +30,6 @@ function LK.SlashHandler( msg )
 		--Empty command
 		LK.UpdateGui();
 		LK.ShowGui();
-		LK.AutoSync();
 		
 	else
 	
@@ -80,6 +79,8 @@ end
 function LK.ShowGui()
 	
 	LK.gui:Show();
+	LK.AutoSync();
+	
 end
 
 function LK.HideGui()
@@ -229,7 +230,7 @@ function LK.UpdateGui()
 	else
 	
 		--Set message to match sync target
-		LK.gui.text:SetText( "List received from "..LootKing.syncTarget );
+		LK.gui.text:SetText( "List received from "..save.syncTarget );
 		
 		--Fill dropdown with list names
 		LK.gui.drop:RemoveAllItems();
@@ -316,8 +317,6 @@ function LK.OnEvent_CHAT_MSG_ADDON( prefix, msg, channel, sender )
 		return;
 	end
 	
-	--LK.Print( "Addon prefix: "..tostring(prefix).." Message: "..tostring(msg) );
-	
 	local cmd, arg1, arg2 = strsplit( "_", msg );
 	
 	if (cmd == "SyncList" and LK.syncOn) then
@@ -360,7 +359,9 @@ end
 
 
 function LK.ApplySync()
-
+	
+	LK.Print( "List received from "..LK.syncTarget );
+	
 	--Get save table
 	local save = LK.GetSave();
 	
@@ -379,6 +380,9 @@ function LK.ApplySync()
 			save.activeList = name;
 		end
 	end
+	
+	--Store sync target
+	save.syncTarget = LK.syncTarget;
 	
 	LK.UpdateGui();
 end
@@ -440,7 +444,7 @@ function LK.OnEvent_PLAYER_LOGIN()
 	
 	--Init variables
 	LK.syncOn = false;
-	LK.syncTarget = "Target";
+	LK.syncTarget = nil;
 	LK.syncId = 0;
 	LK.syncLists = {};
 	LK.syncActiveList = nil;
@@ -466,7 +470,7 @@ function LK.OnEvent_PLAYER_LOGIN()
 	end
 	
 	--Register communication events
-	LK.gui:RegisterEvent( "CHAT_MSG_ADDON" );
+	LK.frame:RegisterEvent( "CHAT_MSG_ADDON" );
 	
 	--First update
 	LK.UpdateGui();
