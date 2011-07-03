@@ -5,24 +5,6 @@ Author: Ivan Leben
 
 --]]
 
-LootKing = {}
-
-LootKing.VERSION = "0.1";
-
-LootKing.PREFIX = "LootKing";
-LootKing.PRINT_PREFIX = "<LootKing>";
-LootKing.SYNC_PREFIX = "LootKingSync";
-
-LootKing.DEFAULT_SAVE =
-{
-	version = LootKing.VERSION,
-	
-	lists =
-	{
-	},
-	
-	activeList = nil,
-};
 
 local LK = LootKing;
 
@@ -35,19 +17,6 @@ end
 
 function LK.Error (msg)
   print( "|cffffff00" .. LK.PRINT_PREFIX .. " |cffff2222"..msg );
-end
-
---Save management
---===================================================
-
-function LK.ResetSave()
-
-	LootKingSave = CopyTable( LK.DEFAULT_SAVE );
-end
-
-function LK.GetSave()
-
-	return LootKingSave;
 end
 
 --Slash handler
@@ -415,6 +384,50 @@ function LK.ApplySync()
 end
 
 
+--Minimap button
+--===================================================
+
+function LK.CreateMinimapButton()
+
+	local button = PrimeGui.MinimapButton_New( LK.PREFIX.."MinimapButton" );
+	button:SetPosition( LK.GetSave().minimapButtonPos );
+	
+	button.OnPositionChanged	= LK.MinimapButton_OnPositionChanged;
+	button.OnTooltipShow		= LK.MinimapButton_OnTooltipShow;
+	button.OnClick				= LK.MinimapButton_OnClick;
+	
+	return button;
+end
+
+function LK.MinimapButton_OnPositionChanged( button )
+
+	LK.GetSave().minimapButtonPos = button:GetPosition();
+end
+
+function LK.MinimapButton_OnTooltipShow( button )
+
+	GameTooltip:ClearLines();
+	GameTooltip:AddLine("LootKing", 1, 1, 0);
+	GameTooltip:AddLine("|cffffff00Click |cffffffffto show the loot list window");
+	--GameTooltip:AddLine("|cffffff00Right-Click |cffffffffto show the options menu");
+end
+
+function LK.MinimapButton_OnClick( button, mouseButton )
+
+	if (mouseButton == "LeftButton") then
+		
+		if (LK.gui:IsShown())
+		then LK.HideGui();
+		else LK.ShowGui();
+		end
+		
+	elseif (mouseButton == "RightButton") then
+	
+		--LK.ShowConfigGui();
+	end
+end
+
+
 --Entry point
 --===================================================
 
@@ -426,7 +439,7 @@ function LK.OnEvent( frame, event, ... )
   
 end
 
-function LK.Init()
+function LK.OnEvent_PLAYER_LOGIN()
 	
 	--Init variables
 	LK.syncOn = false;
@@ -440,6 +453,14 @@ function LK.Init()
 		LK.ResetSave();
 	end
 	
+	--Upgrade save from old version
+	LK.Upgrade();
+	
+	--Create new minimap button if missing
+	if (LK.button == nil) then
+		LK.button = LK.CreateMinimapButton();
+	end
+	
 	--Create new gui if missing
 	if (LK.gui == nil) then
 		LK.gui = LK.CreateGui();
@@ -447,12 +468,20 @@ function LK.Init()
 		LK.gui:Hide();
 	end
 	
-	--Register addon event
-	LK.gui:SetScript( "OnEvent", LK.OnEvent );
+	--Register communication events
 	LK.gui:RegisterEvent( "CHAT_MSG_ADDON" );
 	
 	--First update
 	LK.UpdateGui();
+	
+end
+
+function LK.Init()
+
+	--Register event for initialization (save isn't loaded until PLAYER_LOGIN!!!)
+	LK.frame = CreateFrame( "Frame", LK.PREFIX.."EventFrame" );
+	LK.frame:SetScript( "OnEvent", LK.OnEvent );
+	LK.frame:RegisterEvent( "PLAYER_LOGIN" );
 	
 end
 
