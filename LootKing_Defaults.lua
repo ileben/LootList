@@ -15,7 +15,7 @@ local LK = LootKing;
 --Default values
 --========================================================
 
-LK.VERSION = "0.1";
+LK.VERSION = "1.1";
 LK.UPGRADE_LIST = { "1.1" };
 
 LK.PREFIX = "LootKing";
