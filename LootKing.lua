@@ -390,6 +390,7 @@ end
 function LK.CreateMinimapButton()
 
 	local button = PrimeGui.MinimapButton_New( LK.PREFIX.."MinimapButton" );
+	button:SetIcon( "Interface\\AddOns\\LootKing\\icon.tga" );
 	button:SetPosition( LK.GetSave().minimapButtonPos );
 	
 	button.OnPositionChanged	= LK.MinimapButton_OnPositionChanged;
@@ -409,7 +410,6 @@ function LK.MinimapButton_OnTooltipShow( button )
 	GameTooltip:ClearLines();
 	GameTooltip:AddLine("LootKing", 1, 1, 0);
 	GameTooltip:AddLine("|cffffff00Click |cffffffffto show the loot list window");
-	--GameTooltip:AddLine("|cffffff00Right-Click |cffffffffto show the options menu");
 end
 
 function LK.MinimapButton_OnClick( button, mouseButton )
@@ -421,9 +421,6 @@ function LK.MinimapButton_OnClick( button, mouseButton )
 		else LK.ShowGui();
 		end
 		
-	elseif (mouseButton == "RightButton") then
-	
-		--LK.ShowConfigGui();
 	end
 end
 
