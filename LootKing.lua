@@ -367,18 +367,24 @@ function LK.ApplySync()
 	
 	--Clear existing lists
 	PrimeUtil.ClearTableKeys( save.lists );
-	save.activeList = nil;
 	
 	--Iterate sync lists
+	local firstList = nil;
+	
 	for name,syncList in pairs(LK.syncLists) do
 		
-		--Insert/overwrite active list
+		--Insert synced list
 		save.lists[ name ] = CopyTable(syncList);
 		
-		--Set first list active
-		if (save.activeList == nil) then
-			save.activeList = name;
+		--Remember first synced list
+		if (firstList == nil) then
+			firstList = name;
 		end
+	end
+	
+	--Select first synced list if previously selected list doesn't exist anymore
+	if (save.activeList == nil or save.lists[ save.activeList ] == nil) then
+		save.activeList = firstList;
 	end
 	
 	--Store sync target
