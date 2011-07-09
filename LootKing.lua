@@ -113,46 +113,6 @@ function LK.SetActiveList( name )
 	LK.UpdateGui();
 end
 
-function LK.FillList( guiList, playerList )
-
-	--Constants
-	local white = {r=1, g=1, b=1, a=1};
-	local gray = {r=0.5, g=0.5, b=0.5, a=1};
-	
-	--Get raid info
-	local inRaid = UnitInRaid("player");
-	local raidMembers = PrimeGroup.GetMembers();
-	
-	--Clear existing items
-	guiList:RemoveAllItems();
-	
-	--Iterate player items
-	for i=1,table.getn(playerList) do
-	
-		--White if not in raid
-		local col = white;
-		if (inRaid) then
-		
-			--Gray if item not in raid
-			col = gray;
-			
-			--Find item among raid members
-			for r=1,table.getn(raidMembers) do
-				if (raidMembers[r] == playerList[i]) then
-				
-					--Class color if item in raid
-					col = PrimeGroup.GetClassColor( playerList[i] );
-					break;
-				end
-			end
-		end
-		
-		--Insert player item with set color
-		guiList:AddItem( { text = playerList[i], color = col } );
-		
-	end
-end
-
 
 function LK.CreateGui()
 
@@ -249,6 +209,46 @@ function LK.UpdateGui()
 			--Update list
 			LK.FillList( LK.gui.list, list );
 		end
+		
+	end
+end
+
+function LK.FillList( guiList, playerList )
+
+	--Constants
+	local white = {r=1, g=1, b=1, a=1};
+	local gray = {r=0.5, g=0.5, b=0.5, a=1};
+	
+	--Get raid info
+	local inRaid = UnitInRaid("player");
+	local raidMembers = PrimeGroup.GetMembers();
+	
+	--Clear existing items
+	guiList:RemoveAllItems();
+	
+	--Iterate player items
+	for i=1,table.getn(playerList) do
+	
+		--White if not in raid
+		local col = white;
+		if (inRaid) then
+		
+			--Gray if item not in raid
+			col = gray;
+			
+			--Find item among raid members
+			for r=1,table.getn(raidMembers) do
+				if (raidMembers[r] == playerList[i]) then
+				
+					--Class color if item in raid
+					col = PrimeGroup.GetClassColor( playerList[i] );
+					break;
+				end
+			end
+		end
+		
+		--Insert player item with set color
+		guiList:AddItem( { text = playerList[i], color = col } );
 		
 	end
 end
