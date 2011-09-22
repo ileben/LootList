@@ -2,7 +2,7 @@
 ## Title: LootKing
 ## Notes: List of players for Suicide Kings loot distribution
 ## Author: Ivan Leben
-## Version: 1.2
+## Version: 1.3
 ## SavedVariables: LootKingSave
 
 Prime\PrimeUtil.lua
