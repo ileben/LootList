@@ -477,6 +477,7 @@ function LK.OnEvent_PLAYER_LOGIN()
 	
 	--Register communication events
 	LK.frame:RegisterEvent( "CHAT_MSG_ADDON" );
+	RegisterAddonMessagePrefix( LK.SYNC_PREFIX );
 	
 	--First update
 	LK.UpdateGui();
